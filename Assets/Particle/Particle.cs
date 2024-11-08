@@ -5,28 +5,45 @@ using UnityEngine;
 
 public class Particle
 {
-    public Vector3 Position { get; set; }
-    public Vector3 Velocity { get; set; }
-    public float Lifetime { get; set; }
-    public ParticleMaterial Material { get; set; }
+    private Vector3 position;
+    private Vector3 direction;
+    private Vector3 velocity;
+    private float speed;
+    private float lifetime;
+    private float age = 0f;
+    private float currentTime;
 
-    public Particle(Vector3 position, Vector3 velocity, float lifetime, ParticleMaterial material)
+    private readonly ParticleType type;
+
+    public Particle(Vector3 position, ParticleType type, Vector3 direction)
     {
-        Position = position;
-        Velocity = velocity;
-        Lifetime = lifetime;
-        Material = material;
+        this.position = position;
+        this.type = type;
+        this.direction = direction;
+        this.velocity = Vector3.up * type.Speed;
+        this.lifetime = UnityEngine.Random.Range(1f, 3f);
     }
 
-    public void Update()
+    public bool Update(float deltaTime)
     {
-        Position += Velocity;
-        Lifetime -= Time.deltaTime;
+        age += deltaTime;
+        position += direction * speed * deltaTime;
+
+        return age < lifetime;
     }
 
-    public void Draw()
+    /*public void Render()
     {
-        Console.WriteLine($"Dibujando partícula en {Position} con material {Material.Color}");
-    }
+        Debug.Log("Dibujando partículas");
+
+        if (type.Material != null)
+        {
+            Graphics.DrawMesh(MeshHelper.CreateQuad(), Matrix4x4.TRS(position, Quaternion.identity, Vector3.one * 2), type.Material, 0);
+        }
+        else
+        {
+            Debug.LogWarning("Material de partícula no asignado.");
+        }
+    }*/
 }
 
