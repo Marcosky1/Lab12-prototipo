@@ -31,19 +31,5 @@ public class Particle
 
         return age < lifetime;
     }
-
-    /*public void Render()
-    {
-        Debug.Log("Dibujando partículas");
-
-        if (type.Material != null)
-        {
-            Graphics.DrawMesh(MeshHelper.CreateQuad(), Matrix4x4.TRS(position, Quaternion.identity, Vector3.one * 2), type.Material, 0);
-        }
-        else
-        {
-            Debug.LogWarning("Material de partícula no asignado.");
-        }
-    }*/
 }
 
