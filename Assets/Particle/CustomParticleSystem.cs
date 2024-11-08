@@ -10,7 +10,16 @@ public class CustomParticleSystem : MonoBehaviour
     [SerializeField] private float particleLifetime = 2f;
 
     private float spawnTimer = 0f;
-    private List<GameObject> particles = new List<GameObject>();
+    private List<Particle> particles = new List<Particle>();
+    private ParticleType particleType;
+
+    void Start()
+    {
+        Material material = particlePrefab.GetComponent<MeshRenderer>().sharedMaterial; 
+        Color color = material.color;
+        float speed = 5f;
+        particleType = ParticleType.GetSharedParticle(material, color, speed);
+    }
 
     void Update()
     {
@@ -23,14 +32,20 @@ public class CustomParticleSystem : MonoBehaviour
                 Random.Range(-spawnRange.z, spawnRange.z)
             );
 
-            GameObject particle = Instantiate(particlePrefab, randomPosition, Quaternion.identity);
-            particles.Add(particle);
+            GameObject particleObject = Instantiate(particlePrefab, randomPosition, Quaternion.identity);
+            Particle particle = particleObject.GetComponent<Particle>();
 
-            Destroy(particle, particleLifetime);
+            if (particle != null)
+            {
+                particle.Initialize(particleType);
+                particles.Add(particle);
+            }
+
+            Destroy(particleObject, particleLifetime);
 
             spawnTimer = 0f;
         }
 
-        particles.RemoveAll(p => p == null);
+        particles.RemoveAll(p => !p.Update(Time.deltaTime));
     }
 }
